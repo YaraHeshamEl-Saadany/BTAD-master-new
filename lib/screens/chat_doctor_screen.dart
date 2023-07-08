@@ -26,8 +26,7 @@ class _ChatDoctorScreenState extends State<ChatDoctorScreen> {
   @override
   void initState() {
     super.initState();
-    _chatStream = ChatService.getChatsForUser(
-        widget.receiverEmail); // Use receiver's email
+    _chatStream = ChatService.getChatsForUser(widget.user.email);
   }
 
   @override

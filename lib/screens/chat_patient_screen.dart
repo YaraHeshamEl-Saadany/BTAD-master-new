@@ -60,14 +60,20 @@ class _ChatPatientScreenState extends State<ChatPatientScreen> {
                   itemBuilder: (context, index) {
                     final chatDoc = chatDocs[index];
                     final chatData = chatDoc.data();
+                    final senderEmail = chatData['senderEmail'];
+                    final message = chatData['message'];
 
-                    final isSender =
-                        chatData['senderEmail'] == widget.user.email;
+                    if (senderEmail == null || message == null) {
+                      return SizedBox(); // Skip the null values
+                    }
+
+                    final isSender = senderEmail == widget.user.email;
                     // ignore: unused_local_variable
                     final bubbleAlignment = isSender
                         ? CrossAxisAlignment.end
                         : CrossAxisAlignment.start;
-                    final bubbleColor = isSender ? Colors.blue : Colors.grey;
+                    final bubbleColor =
+                        isSender ? Colors.blue : Colors.grey.shade300;
                     final textColor = isSender ? Colors.white : Colors.black;
 
                     return Padding(
@@ -85,7 +91,7 @@ class _ChatPatientScreenState extends State<ChatPatientScreen> {
                             ),
                             padding: EdgeInsets.all(8.0),
                             child: Text(
-                              chatData['message'] ?? '',
+                              message,
                               style: TextStyle(color: textColor),
                             ),
                           ),

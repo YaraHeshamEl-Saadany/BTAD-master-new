@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../models/chat_service.dart';
 import '../models/user.dart';
 import 'chat_doctor_screen.dart';
 
@@ -22,7 +21,10 @@ class PatientListScreen extends StatelessWidget {
 
   Widget _buildPatientList(BuildContext context) {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      stream: ChatService.getChatsForUser(user.email),
+      stream: FirebaseFirestore.instance
+          .collection('users')
+          .where('role', isEqualTo: 'patient')
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
@@ -32,45 +34,29 @@ class PatientListScreen extends StatelessWidget {
           return const CircularProgressIndicator();
         }
 
-        final chatDocs = snapshot.data?.docs ?? [];
+        final patientDocs = snapshot.data?.docs ?? [];
 
-        if (chatDocs.isEmpty) {
-          return const Text('No chat messages found.');
+        if (patientDocs.isEmpty) {
+          return const Text('No patients found.');
         }
 
         return ListView.builder(
-          itemCount: chatDocs.length,
+          itemCount: patientDocs.length,
           itemBuilder: (context, index) {
-            final chatDoc = chatDocs[index];
-            final chatData = chatDoc.data();
+            final patientDoc = patientDocs[index];
+            final patientData = patientDoc.data();
+            final patientEmail = patientData['email'] as String?;
 
-            /* final otherUserEmail = chatData['emails'] != null
-                ? chatData['emails'].cast<String>().firstWhere(
-                      (email) => email != user.email,
-                      orElse: () => '',
-                    )
-                : '';
+            if (patientEmail == null) {
+              return const SizedBox(); // Skip the null values
+            }
 
             return Card(
               child: ListTile(
-                title: Text(otherUserEmail),
+                title: Text(patientEmail),
                 onTap: () {
-                  if (otherUserEmail.isNotEmpty) {
-                    _openChatScreen(context, otherUserEmail);
-                  }
-                },
-              ),
-            ); */
-            final senderEmail =
-                chatData['email'] as String; // Retrieve sender's email
-
-            return Card(
-              child: ListTile(
-                title: Text(senderEmail),
-                onTap: () {
-                  if (senderEmail.isNotEmpty) {
-                    _openChatScreen(
-                        context, senderEmail); // Pass sender's email
+                  if (patientEmail.isNotEmpty) {
+                    _openChatScreen(context, patientEmail);
                   }
                 },
               ),

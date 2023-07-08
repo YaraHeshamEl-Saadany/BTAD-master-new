@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatService {
-  static FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   static Future<void> sendMessage({
     required String senderEmail,
@@ -12,17 +12,18 @@ class ChatService {
     final chatId = chatDocRef.id;
 
     final senderData = {
-      'email': senderEmail,
+      'senderEmail': senderEmail, // Change 'email' to 'senderEmail'
+      'receiverEmail': receiverEmail, // Add 'receiverEmail'
       'message': message,
       'timestamp': FieldValue.serverTimestamp(),
     };
 
     final receiverData = {
-      'email': receiverEmail,
+      'senderEmail': senderEmail, // Change 'email' to 'senderEmail'
+      'receiverEmail': receiverEmail, // Add 'receiverEmail'
       'message': message,
       'timestamp': FieldValue.serverTimestamp(),
     };
-
     final batch = _firestore.batch();
 
     batch.set(chatDocRef, senderData);
@@ -31,14 +32,14 @@ class ChatService {
     final senderUserDocRef = _firestore
         .collection('users')
         .doc(senderEmail)
-        .collection('chats')
+        .collection('chat')
         .doc(chatId);
     batch.set(senderUserDocRef, receiverData);
 
     final receiverUserDocRef = _firestore
         .collection('users')
         .doc(receiverEmail)
-        .collection('chats')
+        .collection('chat')
         .doc(chatId);
     batch.set(receiverUserDocRef, senderData);
 
@@ -50,7 +51,7 @@ class ChatService {
     return _firestore
         .collection('users')
         .doc(email)
-        .collection('chats')
+        .collection('chat')
         .orderBy('timestamp')
         .snapshots();
   }

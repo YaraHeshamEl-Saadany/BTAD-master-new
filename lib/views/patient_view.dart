@@ -110,6 +110,39 @@ class PatientView extends StatelessWidget {
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
+                      builder: (context) => DoctorListScreen(
+                        user: user,
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  child: Column(
+                    children: [
+                      Image.asset(
+                        'assets/chat.png',
+                        fit: BoxFit.cover,
+                        width: 400,
+                        height: 250,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text(
+                          "Chat",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
                       builder: (context) => const AlzheimerModel(),
                     ),
                   );
@@ -189,39 +222,6 @@ class PatientView extends StatelessWidget {
                         padding: EdgeInsets.all(8.0),
                         child: Text(
                           "Schedule Appointment",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => DoctorListScreen(
-                        user: user,
-                      ),
-                    ),
-                  );
-                },
-                child: Card(
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        'assets/chat.png',
-                        fit: BoxFit.cover,
-                        width: 400,
-                        height: 250,
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          "Chat",
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
